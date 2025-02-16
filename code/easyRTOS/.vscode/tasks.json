@@ -1,0 +1,44 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "arm-none-eabi-gcc.exe 生成活动文件",
+            "command": "C:/Program Files/GNU_Arm_Embedded_Toolchain/bin/arm-none-eabi-gcc.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.elf"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "构建文件"
+        },
+        {
+            "type": "shell",
+            "label": "ninja 编译可执行文件",
+            "command": "ninja",
+            "detail": "编译文件。"
+        },
+        {
+            "type": "shell",
+            "label": "pyocd烧录",
+            "command": "pyocd",
+            "args": [
+                "-t STM32F103C8",
+                "${fileDirname}\\${fileBasenameNoExtension}.elf"
+            ],
+            "detail": "烧录文件"
+        },
+    ],
+    "version": "2.0.0"
+}

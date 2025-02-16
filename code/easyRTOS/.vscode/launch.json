@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "E:/C&C++/easyRTOS/code/easyRTOS/build/Debug/easyRTOS.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "targetId": "stm32f103c8",
+            "servertype": "pyocd",
+            "serverpath": "C:/Users/86176/AppData/Roaming/Python/Python312/Scripts/pyocd.exe",
+            "armToolchainPath": "C:/Program Files/GNU_Arm_Embedded_Toolchain/bin",
+            "gdbPath": "C:/Program Files/GNU_Arm_Embedded_Toolchain/bin/arm-none-eabi-gdb.exe"
+        }
+    ]
+}
