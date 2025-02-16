@@ -59,8 +59,8 @@ extern "C"
 /* Private defines -----------------------------------------------------------*/
 #define LED1_Pin GPIO_PIN_1
 #define LED1_GPIO_Port GPIOA
-#define LED2_Pin GPIO_PIN_2
-#define LED2_GPIO_Port GPIOA
+#define LED2_Pin GPIO_PIN_12
+#define LED2_GPIO_Port GPIOB
 
   /* USER CODE BEGIN Private defines */
 
