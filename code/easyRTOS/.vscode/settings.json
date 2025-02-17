@@ -2,6 +2,13 @@
     "files.associations": {
         "*.c++": "cpp",
         "main.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "ert_thread.h": "c",
+        "ert_cpuport.h": "c",
+        "ert_scheduler.h": "c",
+        "ert_config.h": "c",
+        "stm32f1xx_it.h": "c",
+        "easy_rtos.h": "c",
+        "ert_typedef.h": "c"
     }
 }

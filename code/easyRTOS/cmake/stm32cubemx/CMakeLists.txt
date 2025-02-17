@@ -18,6 +18,7 @@ target_include_directories(stm32cubemx INTERFACE
     ../../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy
     ../../Drivers/CMSIS/Device/ST/STM32F1xx/Include
     ../../Drivers/CMSIS/Include
+    ../../Kernel/Inc
 )
 
 target_sources(stm32cubemx INTERFACE
@@ -41,7 +42,12 @@ target_sources(stm32cubemx INTERFACE
     ../../Core/Src/system_stm32f1xx.c
     ../../Core/Src/sysmem.c
     ../../Core/Src/syscalls.c
+    ../../Core/Src/easy_rtos.c
     ../../Core/Startup/startup_stm32f103xb.s
+    ../../Kernel/Src/ert_cpuport.c
+    ../../Kernel/Src/ert_thread.c
+    ../../Kernel/Src/ert_scheduler.c
+    ../../Kernel/Src/context_rvds.s
 )
 
 target_link_directories(stm32cubemx INTERFACE
