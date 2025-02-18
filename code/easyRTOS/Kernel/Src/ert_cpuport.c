@@ -6,9 +6,6 @@ ert_uint32_t ert_interrupt_from_thread;
 ert_uint32_t ert_interrupt_to_thread;
 /* PendSV中断服务函数执行标志 */
 ert_uint32_t ert_thread_switch_interrupr_flag;
-/* 用于存储当前线程的栈的指针 */
-ert_uint32_t ert_interrupt_current_thread;
-
 /*
 *brief 初始化线程栈
 *param1: 线程入口
@@ -30,7 +27,7 @@ ert_uint8_t *ert_hw_stack_init(void *entry,
     stk = (ert_uint8_t *)ERT_ALIGN_DOWN((ert_uint32_t)stk, 8);
 
     /*stk指针继续向下移动sizeof(struct stack_frame)个偏移*/
-    stk -= sizeof(struct stack_frame *);
+    stk -= sizeof(struct stack_frame);
 
     /*将stk指针强制转化为stack_frame类型后存到stack_frame*/
     stack_frame = (struct stack_frame *)stk; 

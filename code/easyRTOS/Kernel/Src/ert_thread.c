@@ -1,5 +1,6 @@
 #include "ert_thread.h"
 #include "ert_cpuport.h"
+#include "ert_object.h"
 
 /*
 *brief thread 初始化
@@ -10,11 +11,15 @@
 *param5: stack_size 表示线程栈的大小，单位为字节
 */
 ert_bool_t ert_thread_init(struct ert_thread *thread,
+                            const char *name,
                             void  (*entry)(void *parameter),
                             void  *parameter,
                             void  *stack_start,
                             ert_uint32_t stack_size)
 {
+    /*线程对象初始化*/
+    ert_object_init((ert_object_t)thread,ERT_Object_Class_Thread,name);
+
     ert_list_init(&(thread->tlist));
 
     thread->entry = (void *)entry;
@@ -24,9 +29,9 @@ ert_bool_t ert_thread_init(struct ert_thread *thread,
 
     /* 初始化线程栈，并返回线程栈指针 */
     thread->sp=(void *)ert_hw_stack_init(
-    thread->entry,
-    thread->parameter,
-    (void *)((char *)thread->stack_addr+thread->stack_size-4) 
+        thread->entry,
+        thread->parameter,
+        (void *)((char *)thread->stack_addr + thread->stack_size - 4) 
     );
     
     return ERT_EOK;

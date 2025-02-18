@@ -9,6 +9,7 @@
         "ert_config.h": "c",
         "stm32f1xx_it.h": "c",
         "easy_rtos.h": "c",
-        "ert_typedef.h": "c"
+        "ert_typedef.h": "c",
+        "random": "cpp"
     }
 }

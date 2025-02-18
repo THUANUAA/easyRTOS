@@ -48,6 +48,8 @@ target_sources(stm32cubemx INTERFACE
     ../../Kernel/Src/ert_thread.c
     ../../Kernel/Src/ert_scheduler.c
     ../../Kernel/Src/context_rvds.s
+    ../../Kernel/Src/ert_object.c
+    ../../Kernel/Src/service.c
 )
 
 target_link_directories(stm32cubemx INTERFACE

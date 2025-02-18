@@ -59,8 +59,16 @@ void ert_schedule(void)
         ert_current_thread=to_thread;
     }
     else if(ert_current_thread == ert_list_entry(ert_thread_priority_table[1].next,
+                                            struct ert_thread,
+                                            tlist))
+    {
+        from_thread=ert_current_thread;
+        to_thread=ert_list_entry(ert_thread_priority_table[2].next,
                                 struct ert_thread,
-                                tlist))
+                                tlist);
+        ert_current_thread=to_thread;
+    }
+    else
     {
         from_thread=ert_current_thread;
         to_thread=ert_list_entry(ert_thread_priority_table[0].next,
