@@ -3,12 +3,6 @@
 #include "gpio.h"
 #include "core_cm3.h"
 
-volatile ert_uint32_t flag1;
-volatile ert_uint32_t flag2;
-
-/* 线程就绪列表 */
-extern ert_list_t ert_thread_priority_table[ERT_THREAD_PRIORITY_MAX];
-
 /* 定义线程控制块 */ 
 struct ert_thread ert_flag1_thread;
 struct ert_thread ert_flag2_thread;
@@ -35,34 +29,28 @@ void easy_rtos_init(void)
     ert_thread_idle_init();
 
     ert_thread_init(&ert_flag1_thread,              /*线程控制块*/
-                    "ert_flag1_thread",
                     flag1_thread_entry,             /*线程入口地址*/
                     ERT_NULL,                       /*线程形参*/
                     &ert_flag1_thread_stack[0],     /*线程栈起始地址*/
-                    sizeof(ert_flag1_thread_stack)  /*线程栈大小，单位为字节*/
+                    sizeof(ert_flag1_thread_stack), /*线程栈大小，单位为字节*/
+                    0
                     );
-    /*将线程插入就绪列表中*/
-    ert_list_insert_before(&(ert_thread_priority_table[0]),&(ert_flag1_thread.tlist));
 
     ert_thread_init(&ert_flag2_thread,              /*线程控制块*/
-                    "ert_flag2_thread",
                     flag2_thread_entry,             /*线程入口地址*/
                     ERT_NULL,                       /*线程形参*/
                     &ert_flag2_thread_stack[0],     /*线程栈起始地址*/
-                    sizeof(ert_flag2_thread_stack)  /*线程栈大小，单位为字节*/
+                    sizeof(ert_flag2_thread_stack), /*线程栈大小，单位为字节*/
+                    0
                     );
-    /*将线程插入就绪列表中*/
-    ert_list_insert_before(&(ert_thread_priority_table[1]),&(ert_flag2_thread.tlist));
 
     ert_thread_init(&ert_flag3_thread,              /*线程控制块*/
-                    "ert_flag3_thread",
                     flag3_thread_entry,             /*线程入口地址*/
                     ERT_NULL,                       /*线程形参*/
-                    &ert_flag3_thread_stack[0],     /*线程栈起始地址*/
-                    sizeof(ert_flag3_thread_stack)  /*线程栈大小，单位为字节*/
+                    &ert_flag3_thread_stack[1],     /*线程栈起始地址*/
+                    sizeof(ert_flag3_thread_stack), /*线程栈大小，单位为字节*/
+                    0
                     );
-    /*将线程插入就绪列表中*/
-    ert_list_insert_before(&(ert_thread_priority_table[2]),&(ert_flag3_thread.tlist));
 
     /*启动系统调度器*/
     ert_system_scheduler_start();

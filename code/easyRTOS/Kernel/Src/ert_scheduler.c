@@ -53,32 +53,48 @@ void ert_system_scheduler_start(void)
 void ert_schedule(void)
 {
     struct ert_thread *to_thread;
-    struct ert_thread *from_thread;
-
-    ert_int8_t is_idle_flag=1;
+    struct ert_thread *from_thread = ert_current_thread;
     
-    for(ert_int32_t i=0;i<ERT_THREAD_PRIORITY_MAX;i++)
+    // 默认认为当前线程是空闲线程
+    ert_int8_t is_idle_flag = 1;
+
+    // 遍历线程优先级表
+    for (ert_uint8_t i = 0; i < thread_num; i++)
     {
-        struct ert_thread *thread=ert_list_entry(ert_thread_priority_table[i].next,
-                                                struct ert_thread,
-                                                tlist);
-        if((thread->remaining_tick==0) && (thread->flag==ERT_Object_Class_Thread))
+        struct ert_list_node *node = ert_thread_priority_table[i].next;
+        
+        // 遍历线程链表
+        while (node != &ert_thread_priority_table[i] && is_idle_flag)
         {
-            from_thread = ert_current_thread;
-            to_thread = thread;
-            ert_current_thread = to_thread;
-            is_idle_flag=0;
-            break;
+            struct ert_thread *thread = ert_list_entry(node, struct ert_thread, tlist);
+            node = node->next;
+
+            // 找到延时时间为0的线程
+            if (thread->remaining_tick == 0)
+            {
+                to_thread = thread;
+                ert_current_thread = to_thread;
+                is_idle_flag = 0;
+                break;
+            }
         }
+
+        if (!is_idle_flag)
+            break;
     }
-    if(ert_current_thread==&idle)return;
-    if(is_idle_flag)
+
+    // 如果没有找到合适的线程，则切换到空闲线程
+    if (is_idle_flag)
     {
-        from_thread = ert_current_thread;
         to_thread = &idle;
         ert_current_thread = to_thread;
     }
 
-    /*上下文切换*/
-    ert_hw_context_switch((ert_uint32_t)&from_thread->sp,(ert_uint32_t)&to_thread->sp);
+    // 如果当前线程已经是空闲线程，则不需要切换
+    if (from_thread != to_thread)
+    {
+        // 执行上下文切换
+        ert_hw_context_switch((ert_uint32_t)&from_thread->sp, (ert_uint32_t)&to_thread->sp);
+    }
 }
+

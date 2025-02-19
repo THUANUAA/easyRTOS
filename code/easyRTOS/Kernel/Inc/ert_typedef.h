@@ -34,50 +34,6 @@ struct ert_list_node
 };
 typedef struct ert_list_node ert_list_t;
 
-/*
- ********************************
-            对象类型
- ********************************
- */
-enum ert_object_class_type
-{
-    ERT_Object_Class_Thread = 0,        /*线程对象*/
-    ERT_Object_Class_Semaphore,         /*信号对象*/
-    ERT_Object_Class_Mutex,             /*互斥量对象*/
-    ERT_Object_Class_Event,             /*事件对象*/
-    ERT_Object_Class_MailBox,           /*邮箱对象*/
-    ERT_Object_Class_MessageQueue,      /*消息队列对象*/
-    ERT_Object_Class_MemHeap,           /*内存堆对象*/
-    ERT_Object_Class_MemPool,           /*内存池对象*/
-    ERT_Object_Class_Device,            /*设备对象*/
-    ERT_Object_Class_Timer,             /*定时器对象*/
-    ERT_Object_Class_Module,            /*模块对象*/
-    ERT_Object_Class_Unknown,           /*未知对象*/
-    ERT_Object_Class_Static = 0x80      /*静态对象*/
-};
-
-#define ERT_NAME_MAX                    8
-
-struct ert_object
-{
-    /* data */
-    char  name[ERT_NAME_MAX];           /*内核对象名字*/
-    ert_uint8_t type;                   /*内核对象类型*/
-    ert_uint8_t flag;                   /*内核对象状态*/
-    ert_uint8_t list;                   /*内核对象的列表节点*/
-};
-typedef struct ert_object  *ert_object_t;       /*内核对象数据类型重定义*/
-
-struct ert_object_information
-{
-    /* data */
-    enum ert_object_class_type type;    /*对象类型*/
-    ert_list_t  object_list;            /*对象列表节点头*/
-    ert_size_t  object_size;            /*对象大小*/
-};
-
-
-
 #define ERT_TRUE                        1
 #define ERT_FALSE                       0
 

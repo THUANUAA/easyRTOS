@@ -1,10 +1,12 @@
 #include "ert_thread.h"
 #include "ert_cpuport.h"
-#include "ert_object.h"
 
 /* 线程控制块指针，用于指向当前线程 */
 extern struct ert_thread *ert_current_thread;
+ert_uint8_t thread_num=0;
 
+/* 线程就绪列表 */
+extern ert_list_t ert_thread_priority_table[ERT_THREAD_PRIORITY_MAX];
 /*
 *brief thread 初始化
 *param1: 线程控制块指针
@@ -14,15 +16,12 @@ extern struct ert_thread *ert_current_thread;
 *param5: stack_size 表示线程栈的大小，单位为字节
 */
 ert_bool_t ert_thread_init(struct ert_thread *thread,
-                            const char *name,
                             void  (*entry)(void *parameter),
                             void  *parameter,
                             void  *stack_start,
-                            ert_uint32_t stack_size)
+                            ert_uint32_t stack_size,
+                            ert_uint8_t  thread_priority)
 {
-    /*线程对象初始化*/
-    ert_object_init((ert_object_t)thread,ERT_Object_Class_Thread,name);
-
     ert_list_init(&(thread->tlist));
 
     thread->entry = (void *)entry;
@@ -30,13 +29,19 @@ ert_bool_t ert_thread_init(struct ert_thread *thread,
     thread->stack_addr=stack_start;
     thread->stack_size=stack_size;
     thread->remaining_tick=0;
+    thread->thread_priority=thread_priority;
+
     /* 初始化线程栈，并返回线程栈指针 */
     thread->sp=(void *)ert_hw_stack_init(
         thread->entry,
         thread->parameter,
         (void *)((char *)thread->stack_addr + thread->stack_size - 4) 
     );
-    
+    thread_num++;
+
+    /*将线程插入就绪列表中*/
+    ert_list_insert_before(&(ert_thread_priority_table[thread->thread_priority]),&(thread->tlist));
+
     return ERT_EOK;
 }
 

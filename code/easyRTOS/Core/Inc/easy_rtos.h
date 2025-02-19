@@ -7,7 +7,6 @@
 #include "ert_typedef.h"
 #include "ert_scheduler.h"
 #include "clock.h"
-#include "ert_object.h"
 #include "idle.h"
 #include "interrupt.h"
 
