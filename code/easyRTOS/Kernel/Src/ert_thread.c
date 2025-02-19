@@ -2,6 +2,9 @@
 #include "ert_cpuport.h"
 #include "ert_object.h"
 
+/* 线程控制块指针，用于指向当前线程 */
+extern struct ert_thread *ert_current_thread;
+
 /*
 *brief thread 初始化
 *param1: 线程控制块指针
@@ -26,7 +29,7 @@ ert_bool_t ert_thread_init(struct ert_thread *thread,
     thread->parameter=parameter;
     thread->stack_addr=stack_start;
     thread->stack_size=stack_size;
-
+    thread->remaining_tick=0;
     /* 初始化线程栈，并返回线程栈指针 */
     thread->sp=(void *)ert_hw_stack_init(
         thread->entry,
@@ -84,4 +87,18 @@ void ert_list_delete(ert_list_t *node)
     node->prev->next=node->next;
 
     node->next=node->prev=node;
+}
+
+void ert_thread_delay(ert_tick_t tick)
+{
+    struct ert_thread *thread;
+
+    /*获取当前线程的线程控制块*/
+    thread=ert_current_thread;
+
+    /*设置延时时间*/
+    thread->remaining_tick=tick;
+
+    /*系统调度*/
+    ert_schedule();
 }

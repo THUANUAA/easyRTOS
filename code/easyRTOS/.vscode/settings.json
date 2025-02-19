@@ -10,6 +10,22 @@
         "stm32f1xx_it.h": "c",
         "easy_rtos.h": "c",
         "ert_typedef.h": "c",
-        "random": "cpp"
+        "random": "cpp",
+        "ethw.h": "c",
+        "interrupt.h": "c",
+        "stm32f1xx_hal.h": "c",
+        "stm32f1xx_hal_conf.h": "c",
+        "idle.h": "c",
+        "array": "c",
+        "chrono": "c",
+        "compare": "c",
+        "functional": "c",
+        "ostream": "c",
+        "ranges": "c",
+        "ratio": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "clock.h": "c"
     }
 }

@@ -2,10 +2,19 @@
 
 /* 线程控制块指针，用于指向当前线程 */
 struct ert_thread *ert_current_thread;
-/* 线程就绪列表 */
-extern ert_list_t ert_thread_priority_table[];
 /* 线程休眠列表 */
 ert_list_t ert_thread_defunct;
+
+/* 定义线程控制块 */ 
+extern struct ert_thread ert_flag1_thread;
+extern struct ert_thread ert_flag2_thread;
+extern struct ert_thread ert_flag3_thread;
+
+/*空闲线程的线程控制块*/
+extern struct ert_thread idle;
+
+/* 线程就绪列表 */
+ert_list_t ert_thread_priority_table[ERT_THREAD_PRIORITY_MAX];
 /*
 * brief: 初始化系统调度器
 */
@@ -46,35 +55,28 @@ void ert_schedule(void)
     struct ert_thread *to_thread;
     struct ert_thread *from_thread;
 
-    /*线程轮流切换*/
-
-    if(ert_current_thread == ert_list_entry(ert_thread_priority_table[0].next,
-                                        struct ert_thread,
-                                        tlist))
+    ert_int8_t is_idle_flag=1;
+    
+    for(ert_int32_t i=0;i<ERT_THREAD_PRIORITY_MAX;i++)
     {
-        from_thread=ert_current_thread;
-        to_thread=ert_list_entry(ert_thread_priority_table[1].next,
-                                struct ert_thread,
-                                tlist);
-        ert_current_thread=to_thread;
+        struct ert_thread *thread=ert_list_entry(ert_thread_priority_table[i].next,
+                                                struct ert_thread,
+                                                tlist);
+        if((thread->remaining_tick==0) && (thread->flag==ERT_Object_Class_Thread))
+        {
+            from_thread = ert_current_thread;
+            to_thread = thread;
+            ert_current_thread = to_thread;
+            is_idle_flag=0;
+            break;
+        }
     }
-    else if(ert_current_thread == ert_list_entry(ert_thread_priority_table[1].next,
-                                            struct ert_thread,
-                                            tlist))
+    if(ert_current_thread==&idle)return;
+    if(is_idle_flag)
     {
-        from_thread=ert_current_thread;
-        to_thread=ert_list_entry(ert_thread_priority_table[2].next,
-                                struct ert_thread,
-                                tlist);
-        ert_current_thread=to_thread;
-    }
-    else
-    {
-        from_thread=ert_current_thread;
-        to_thread=ert_list_entry(ert_thread_priority_table[0].next,
-                                struct ert_thread,
-                                tlist);
-        ert_current_thread=to_thread;
+        from_thread = ert_current_thread;
+        to_thread = &idle;
+        ert_current_thread = to_thread;
     }
 
     /*上下文切换*/

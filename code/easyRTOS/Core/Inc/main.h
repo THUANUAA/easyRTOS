@@ -63,6 +63,8 @@ extern "C"
 #define LED2_GPIO_Port GPIOB
 #define LED3_Pin GPIO_PIN_3
 #define LED3_GPIO_Port GPIOB
+#define LED4_Pin GPIO_PIN_7
+#define LED4_GPIO_Port GPIOA
   /* USER CODE BEGIN Private defines */
 
   /* USER CODE END Private defines */

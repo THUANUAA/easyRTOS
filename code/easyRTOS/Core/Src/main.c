@@ -20,7 +20,7 @@
 #include "main.h"
 #include "gpio.h"
 #include "easy_rtos.h"
-
+#include "ert_config.h"
 
 void SystemClock_Config(void);
 
@@ -32,6 +32,7 @@ void SystemClock_Config(void);
  */
 int main(void)
 {
+  
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
   /* Configure the system clock */
