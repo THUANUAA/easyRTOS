@@ -3,6 +3,7 @@
 
 #include "ert_typedef.h"
 #include "ert_scheduler.h"
+#include "timer.h"
 
 /*    线程控制块      */
 struct ert_thread
@@ -16,12 +17,21 @@ struct ert_thread
     
     ert_uint32_t remaining_tick;        /*用于实现阻塞延时*/
 
-    ert_uint8_t  thread_priority;
+    ert_uint8_t  thread_priority;       /*线程优先级*/
+    ert_bool_t  status;                 /*线程状态*/
+
+//  ert_timer_t thread_timer;
 };
 
 typedef struct ert_thread  *ert_thread_t;
 
+/* 线程控制块指针，用于指向当前线程 */
+extern struct ert_thread *ert_current_thread;
+
 extern ert_uint8_t thread_num;
+
+#define ERT_THREAD_ACTIVATE         1
+#define ERT_THREAD_SUSPEND          0
 
 ert_bool_t ert_thread_init(struct ert_thread *thread,
     void  (*entry)(void *parameter),
@@ -33,7 +43,9 @@ void ert_list_init(ert_list_t *list);
 void ert_list_insert_after(ert_list_t *list,ert_list_t *newNode);
 void ert_list_insert_before(ert_list_t *list,ert_list_t *newNode);
 void ert_list_delete(ert_list_t *node);
-
 void ert_thread_delay(ert_tick_t tick);
+void ert_thread_suspend(ert_thread_t thread);
+void ert_thread_activate(ert_thread_t thread);
+void ert_thread_alive(ert_tick_t tick);
 
 #endif // !_ERT_THREAD_H

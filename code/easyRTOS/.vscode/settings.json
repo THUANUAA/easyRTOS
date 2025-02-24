@@ -27,6 +27,8 @@
         "type_traits": "c",
         "utility": "c",
         "clock.h": "c",
-        "ert_object.h": "c"
+        "ert_object.h": "c",
+        "timer.h": "c",
+        "thread": "c"
     }
 }

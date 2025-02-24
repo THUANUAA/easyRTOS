@@ -51,6 +51,7 @@ target_sources(stm32cubemx INTERFACE
     ../../Kernel/Src/clock.c
     ../../Kernel/Src/idle.c
     ../../Kernel/Src/interrupt.c
+    ../../Kernel/Src/timer.c
 )
 
 target_link_directories(stm32cubemx INTERFACE

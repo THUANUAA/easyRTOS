@@ -9,6 +9,7 @@
 #include "clock.h"
 #include "idle.h"
 #include "interrupt.h"
+#include "timer.h"
 
 void easy_rtos_init(void);
 void flag1_thread_entry(void *arg);

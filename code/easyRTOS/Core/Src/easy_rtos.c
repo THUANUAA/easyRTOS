@@ -41,15 +41,15 @@ void easy_rtos_init(void)
                     ERT_NULL,                       /*线程形参*/
                     &ert_flag2_thread_stack[0],     /*线程栈起始地址*/
                     sizeof(ert_flag2_thread_stack), /*线程栈大小，单位为字节*/
-                    0
+                    1
                     );
 
     ert_thread_init(&ert_flag3_thread,              /*线程控制块*/
                     flag3_thread_entry,             /*线程入口地址*/
                     ERT_NULL,                       /*线程形参*/
-                    &ert_flag3_thread_stack[1],     /*线程栈起始地址*/
+                    &ert_flag3_thread_stack[0],     /*线程栈起始地址*/
                     sizeof(ert_flag3_thread_stack), /*线程栈大小，单位为字节*/
-                    0
+                    2
                     );
 
     /*启动系统调度器*/
@@ -64,7 +64,7 @@ void flag1_thread_entry(void *arg)
         HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin,GPIO_PIN_SET);
         HAL_GPIO_WritePin(LED3_GPIO_Port,LED3_Pin,GPIO_PIN_SET);
         HAL_GPIO_WritePin(LED4_GPIO_Port,LED4_Pin,GPIO_PIN_SET); 
-        ert_thread_delay(100);
+        
     }
 }
 
@@ -76,7 +76,7 @@ void flag2_thread_entry(void *arg)
         HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin,GPIO_PIN_RESET);
         HAL_GPIO_WritePin(LED3_GPIO_Port,LED3_Pin,GPIO_PIN_SET);
         HAL_GPIO_WritePin(LED4_GPIO_Port,LED4_Pin,GPIO_PIN_SET); 
-        ert_thread_delay(200);
+        
     }
 }
 
@@ -88,7 +88,7 @@ void flag3_thread_entry(void *arg)
         HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin,GPIO_PIN_SET);
         HAL_GPIO_WritePin(LED3_GPIO_Port,LED3_Pin,GPIO_PIN_RESET);
         HAL_GPIO_WritePin(LED4_GPIO_Port,LED4_Pin,GPIO_PIN_SET); 
-        ert_thread_delay(300);
+       
     }
 }
 
@@ -99,6 +99,7 @@ void flag3_thread_entry(void *arg)
 void ert_thread_idle_entry(void *arg)
 {
     (void)arg;
+    
     while(1)
     {
         HAL_GPIO_WritePin(LED4_GPIO_Port,LED4_Pin,GPIO_PIN_RESET);

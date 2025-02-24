@@ -10,7 +10,7 @@ static ert_uint8_t ert_idle_thread_stack[IDLE_THREAD_STACK_SIZE];
 /*空闲线程的线程控制块*/
 struct ert_thread idle;
 
-extern ert_uint32_t thread_num;
+extern ert_uint8_t thread_num;
 /*
 *brief:空闲线程初始化
 */

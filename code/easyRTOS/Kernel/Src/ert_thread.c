@@ -1,12 +1,14 @@
 #include "ert_thread.h"
 #include "ert_cpuport.h"
 
-/* 线程控制块指针，用于指向当前线程 */
-extern struct ert_thread *ert_current_thread;
+
 ert_uint8_t thread_num=0;
 
 /* 线程就绪列表 */
 extern ert_list_t ert_thread_priority_table[ERT_THREAD_PRIORITY_MAX];
+/* 线程挂起列表*/
+extern ert_list_t ert_thread_suspend_table[ERT_THREAD_SUSPEND_NUM];
+
 /*
 *brief thread 初始化
 *param1: 线程控制块指针
@@ -38,10 +40,12 @@ ert_bool_t ert_thread_init(struct ert_thread *thread,
         (void *)((char *)thread->stack_addr + thread->stack_size - 4) 
     );
     thread_num++;
-
+    thread->status=ERT_THREAD_ACTIVATE;
     /*将线程插入就绪列表中*/
     ert_list_insert_before(&(ert_thread_priority_table[thread->thread_priority]),&(thread->tlist));
-
+    
+    thread->remaining_tick=100;
+    
     return ERT_EOK;
 }
 
@@ -96,7 +100,7 @@ void ert_list_delete(ert_list_t *node)
 
 void ert_thread_delay(ert_tick_t tick)
 {
-    struct ert_thread *thread;
+    ert_thread_t thread;
 
     /*获取当前线程的线程控制块*/
     thread=ert_current_thread;
@@ -106,4 +110,36 @@ void ert_thread_delay(ert_tick_t tick)
 
     /*系统调度*/
     ert_schedule();
+    
+}
+
+void ert_thread_suspend(ert_thread_t thread)
+{
+    thread->status=ERT_THREAD_SUSPEND;
+    
+    ert_list_delete(&thread->tlist);
+
+    ert_list_insert_before(&(ert_thread_suspend_table[thread->thread_priority]),&(thread->tlist));
+}
+
+void ert_thread_activate(ert_thread_t thread)
+{
+    thread->status=ERT_THREAD_ACTIVATE;
+    thread->remaining_tick=100;
+    ert_list_delete(&thread->tlist);
+    
+    ert_list_insert_before(&(ert_thread_priority_table[thread->thread_priority]),&(thread->tlist));
+}
+
+void ert_thread_alive(ert_tick_t tick)
+{
+    /*获取当前线程的线程控制块*/
+    ert_thread_t thread=ert_current_thread;
+
+    thread->status=ERT_THREAD_ACTIVATE;
+    thread->remaining_tick=tick;
+    // thread->thread_timer->start_time=ert_tick;
+    // thread->thread_timer->target_time=tick;
+    // thread->thread_timer->timer_status=ERT_TIMER_ACTIVATE;
+    //ert_timer_start(thread->thread_timer, tick);
 }

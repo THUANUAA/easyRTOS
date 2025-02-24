@@ -2,33 +2,40 @@
 #include "ethw.h"
 #include "ert_thread.h"
 
-static ert_tick_t ert_tick=0;   /*系统时基计数器*/
+
+ert_tick_t ert_tick=0;   /*系统时基计数器*/
 extern ert_list_t ert_thread_priority_table[ERT_THREAD_PRIORITY_MAX];
+extern ert_list_t ert_thread_suspend_table[ERT_THREAD_PRIORITY_MAX];
 
 void ert_tick_increase(void)
 {
-    ert_uint8_t i;
-    
+    ert_thread_t thread=ert_current_thread;
+
     ert_tick++;
 
-    /*扫描就绪列表中所有线程的remaining_tick,如果不为0，则减1*/
-    for(i=0;i<thread_num;i++)
-    {
-        struct ert_list_node *node = ert_thread_priority_table[i].next;
-        
-        // 遍历线程链表
-        while (node != &ert_thread_priority_table[i])
-        {
-            struct ert_thread *thread = ert_list_entry(node, struct ert_thread, tlist);
-            node = node->next;
+    thread->remaining_tick--;
 
-            if(thread->remaining_tick>0)
-            {
-                thread->remaining_tick--;
-            }
-        }
+
+    if(thread->remaining_tick==0)
+    {
+        ert_thread_suspend(thread);
+        //ert_timer_stop(thread->thread_timer);
+        // thread->status=ERT_THREAD_SUSPEND;
         
+       
+        /*系统调度*/
+        ert_schedule();      
     }
-    /*系统调度*/
-    ert_schedule();
+
+    if(ert_tick%200==0)
+    {
+        for(ert_uint8_t i=0;i<thread_num;i++)
+        {
+            thread = ert_list_entry(ert_thread_suspend_table[i].next,
+                                    struct ert_thread, 
+                                    tlist);
+            if(thread->status==ERT_THREAD_SUSPEND)
+                ert_thread_activate(thread);
+        }
+    }
 }
