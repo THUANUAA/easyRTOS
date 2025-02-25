@@ -16,4 +16,5 @@ void flag1_thread_entry(void *arg);
 void flag2_thread_entry(void *arg);
 void flag3_thread_entry(void *arg);
 void SysTick_Handler(void);
+void Timer_Handler(void *arg);
 #endif // !_EASY_RTOS_H

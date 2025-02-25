@@ -18,6 +18,6 @@
 
 void ert_system_scheduler_init(void);
 void ert_system_scheduler_start(void);
-void ert_schedule(void);
-
+void ert_slice_schedule(void);
+void ert_preemptive_schedule(void);
 #endif // !_ERT_SCHEDULER_H

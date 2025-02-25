@@ -15,17 +15,24 @@ void ert_tick_increase(void)
 
     thread->remaining_tick--;
 
-
     if(thread->remaining_tick==0)
     {
-        ert_thread_suspend(thread);
-        //ert_timer_stop(thread->thread_timer);
-        // thread->status=ERT_THREAD_SUSPEND;
-        
-       
+        ert_thread_suspend(thread);       
         /*系统调度*/
-        ert_schedule();      
+        ert_slice_schedule();      
     }
+    else
+    {
+        ert_preemptive_schedule();
+    }
+
+    if((ert_tick-system_timer.start_time)==system_timer.target_time)
+    {
+        ert_timer_stop(&system_timer);
+        Timer_Handler(ERT_NULL);
+        ert_timer_start(&system_timer,ERT_STSTEM_TIMER_TIME);
+    }
+
 
     if(ert_tick%200==0)
     {

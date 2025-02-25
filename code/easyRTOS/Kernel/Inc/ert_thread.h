@@ -20,7 +20,7 @@ struct ert_thread
     ert_uint8_t  thread_priority;       /*线程优先级*/
     ert_bool_t  status;                 /*线程状态*/
 
-//  ert_timer_t thread_timer;
+    struct ert_timer thread_timer;           /*线程定时器*/
 };
 
 typedef struct ert_thread  *ert_thread_t;

@@ -15,6 +15,9 @@ ert_uint8_t ert_flag1_thread_stack[THREAD_STACK_SIZE];
 ert_uint8_t ert_flag2_thread_stack[THREAD_STACK_SIZE];
 ert_uint8_t ert_flag3_thread_stack[THREAD_STACK_SIZE];
 
+/*系统定时器*/
+struct ert_timer system_timer;
+
 void easy_rtos_init(void)
 {
     /*关中断*/
@@ -25,6 +28,9 @@ void easy_rtos_init(void)
     /* 调度器初始化 */
     ert_system_scheduler_init();
 
+    /*系统定时器初始化*/
+    system_timer_init(&system_timer,Timer_Handler,ERT_NULL,ERT_TIMER_PERIODIC|ERT_TIMER_ACTIVATE);
+    
     /* 空闲线程初始化*/
     ert_thread_idle_init();
 
@@ -41,7 +47,7 @@ void easy_rtos_init(void)
                     ERT_NULL,                       /*线程形参*/
                     &ert_flag2_thread_stack[0],     /*线程栈起始地址*/
                     sizeof(ert_flag2_thread_stack), /*线程栈大小，单位为字节*/
-                    1
+                    0
                     );
 
     ert_thread_init(&ert_flag3_thread,              /*线程控制块*/
@@ -49,11 +55,16 @@ void easy_rtos_init(void)
                     ERT_NULL,                       /*线程形参*/
                     &ert_flag3_thread_stack[0],     /*线程栈起始地址*/
                     sizeof(ert_flag3_thread_stack), /*线程栈大小，单位为字节*/
-                    2
+                    1
                     );
+
+    /*启动系统定时器*/
+    ert_timer_start(&system_timer,ERT_STSTEM_TIMER_TIME);
 
     /*启动系统调度器*/
     ert_system_scheduler_start();
+    
+    
 }
 
 void flag1_thread_entry(void *arg)
@@ -102,7 +113,7 @@ void ert_thread_idle_entry(void *arg)
     
     while(1)
     {
-        HAL_GPIO_WritePin(LED4_GPIO_Port,LED4_Pin,GPIO_PIN_RESET);
+        
     }
 }
 
@@ -114,4 +125,12 @@ void SysTick_Handler(void)
   ert_tick_increase();
   /*关中断*/
   ert_interrupt_leave();
+}
+
+void Timer_Handler(void *arg)
+{
+    (void)arg;
+
+    HAL_GPIO_TogglePin(LED4_GPIO_Port,LED4_Pin);
+    
 }

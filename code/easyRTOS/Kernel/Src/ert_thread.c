@@ -44,8 +44,10 @@ ert_bool_t ert_thread_init(struct ert_thread *thread,
     /*将线程插入就绪列表中*/
     ert_list_insert_before(&(ert_thread_priority_table[thread->thread_priority]),&(thread->tlist));
     
-    thread->remaining_tick=100;
-    
+    thread->remaining_tick=100*(thread_priority+1);
+        
+    ert_timer_start(&(thread->thread_timer),50);
+
     return ERT_EOK;
 }
 
@@ -109,7 +111,7 @@ void ert_thread_delay(ert_tick_t tick)
     thread->remaining_tick=tick;
 
     /*系统调度*/
-    ert_schedule();
+    ert_slice_schedule();
     
 }
 
@@ -125,7 +127,7 @@ void ert_thread_suspend(ert_thread_t thread)
 void ert_thread_activate(ert_thread_t thread)
 {
     thread->status=ERT_THREAD_ACTIVATE;
-    thread->remaining_tick=100;
+    thread->remaining_tick=100*(thread->thread_priority+1);
     ert_list_delete(&thread->tlist);
     
     ert_list_insert_before(&(ert_thread_priority_table[thread->thread_priority]),&(thread->tlist));

@@ -54,7 +54,33 @@ void ert_system_scheduler_start(void)
     ert_hw_context_switch_to((ert_uint32_t)&to_thread->sp);
 }
 
-void ert_schedule(void)
+void ert_preemptive_schedule(void)
+{
+    struct ert_thread *to_thread;
+    struct ert_thread *from_thread = ert_current_thread;
+    ert_list_t *node=ert_current_thread->tlist.next;
+    while(node!=node->prev)
+    {
+        struct ert_thread *thread=ert_list_entry(node,
+                                                struct ert_thread, 
+                                                tlist);
+        node=node->next;
+        if((ert_tick%thread->thread_timer.target_time==0)&&(thread->status==ERT_THREAD_ACTIVATE))
+        {
+            to_thread = thread;
+            ert_current_thread = to_thread;
+            break;
+        }
+
+        if(node==ert_current_thread)
+            return;
+    }
+
+    // 执行上下文切换
+    ert_hw_context_switch((ert_uint32_t)&from_thread->sp, (ert_uint32_t)&to_thread->sp);
+}
+
+void ert_slice_schedule(void)
 {
     struct ert_thread *to_thread;
     struct ert_thread *from_thread = ert_current_thread;
@@ -68,6 +94,8 @@ void ert_schedule(void)
                                     struct ert_thread, 
                                     tlist);
 
+        
+        
         if(thread->remaining_tick>0 && thread->status==ERT_THREAD_ACTIVATE)
         {
             to_thread = thread;
@@ -85,4 +113,3 @@ void ert_schedule(void)
     // 执行上下文切换
     ert_hw_context_switch((ert_uint32_t)&from_thread->sp, (ert_uint32_t)&to_thread->sp);
 }
-

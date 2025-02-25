@@ -6,4 +6,5 @@
 #define ERT_IDLE_THREAD_PRIORITY_MAX        1/*空闲线程优先级数量*/
 #define ERT_TICK_PRE_SECOND                 100/*时钟预分频系数*/
 #define ERT_THREAD_SUSPEND_NUM              32/*线程挂起数量*/
+#define ERT_STSTEM_TIMER_TIME               500/*系统定时器计数值*/
 #endif // !_ERT_CONFIG_H

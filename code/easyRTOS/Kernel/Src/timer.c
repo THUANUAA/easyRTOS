@@ -3,6 +3,25 @@
 #include  "ert_typedef.h"
 #include  "ert_thread.h"
 
+void system_timer_init(ert_timer_t timer,
+                        void  (*timeout_func)(void *parameter),
+                        void  *parameter,
+                        ert_bool_t timer_status)
+{
+    ert_timer_init(timer,timeout_func,parameter,timer_status);
+    
+}
+
+void ert_timer_init(ert_timer_t timer,
+                    void  (*timeout_func)(void *parameter),
+                    void  *parameter,
+                    ert_bool_t timer_status)
+{
+
+    timer->timeout_func=timeout_func;
+    timer->parameter=parameter;
+    timer->timer_status=timer_status;
+}
 
 void ert_timer_start(ert_timer_t timer,ert_tick_t time)
 {
